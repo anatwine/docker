@@ -28,7 +28,7 @@ module DockerCookbook
         variables(
           docker_name: docker_name,
           docker_socket: connect_socket.sub(%r{unix://|fd://}, ''),
-          docker_mount_flags: mount_flags
+          docker_mount_flags: new_resource.mount_flags
         )
         cookbook 'docker'
         action :create
@@ -60,7 +60,7 @@ module DockerCookbook
           docker_daemon_cmd: docker_daemon_cmd,
           systemd_args: systemd_args,
           docker_wait_ready: "#{libexec_dir}/#{docker_name}-wait-ready",
-          docker_mount_flags: mount_flags
+          docker_mount_flags: new_resource.mount_flags
         )
         cookbook 'docker'
         notifies :run, 'execute[systemctl daemon-reload]', :immediately
