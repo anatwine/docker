@@ -253,76 +253,76 @@ module DockerCookbook
 
         with_retries do
           config = {
-            'name'            => container_name,
-            'Image'           => "#{repo}:#{tag}",
-            'Labels'          => labels,
-            'Cmd'             => to_shellwords(command),
-            'AttachStderr'    => attach_stderr,
-            'AttachStdin'     => attach_stdin,
-            'AttachStdout'    => attach_stdout,
-            'Domainname'      => domain_name,
-            'Entrypoint'      => to_shellwords(entrypoint),
-            'Env'             => env,
-            'ExposedPorts'    => exposed_ports,
-            'Hostname'        => parsed_hostname,
-            'MacAddress'      => mac_address,
-            'NetworkDisabled' => network_disabled,
-            'OpenStdin'       => open_stdin,
-            'StdinOnce'       => stdin_once,
-            'Tty'             => tty,
-            'User'            => user,
-            'Volumes'         => volumes,
-            'WorkingDir'      => working_dir,
+            'name'            => new_resource.container_name,
+            'Image'           => "#{new_resource.repo}:#{new_resource.tag}",
+            'Labels'          => new_resource.labels,
+            'Cmd'             => to_shellwords(new_resource.command),
+            'AttachStderr'    => new_resource.attach_stderr,
+            'AttachStdin'     => new_resource.attach_stdin,
+            'AttachStdout'    => new_resource.attach_stdout,
+            'Domainname'      => new_resource.domain_name,
+            'Entrypoint'      => to_shellwords(new_resource.entrypoint),
+            'Env'             => new_resource.env,
+            'ExposedPorts'    => new_resource.exposed_ports,
+            'Hostname'        => new_resource.parsed_hostname,
+            'MacAddress'      => new_resource.mac_address,
+            'NetworkDisabled' => new_resource.network_disabled,
+            'OpenStdin'       => new_resource.open_stdin,
+            'StdinOnce'       => new_resource.stdin_once,
+            'Tty'             => new_resource.tty,
+            'User'            => new_resource.user,
+            'Volumes'         => new_resource.volumes,
+            'WorkingDir'      => new_resource.working_dir,
             'HostConfig'      => {
-              'Binds'           => volumes_binds,
-              'CapAdd'          => cap_add,
-              'CapDrop'         => cap_drop,
-              'CgroupParent'    => cgroup_parent,
-              'CpuShares'       => cpu_shares,
-              'CpusetCpus'      => cpuset_cpus,
-              'Devices'         => devices,
-              'Dns'             => dns,
-              'DnsSearch'       => dns_search,
-              'ExtraHosts'      => extra_hosts,
-              'IpcMode'         => ipc_mode,
-              'KernelMemory'    => kernel_memory,
-              'Links'           => links,
-              'LogConfig'       => log_config,
-              'Memory'          => memory,
-              'MemorySwap'      => memory_swap,
-              'MemorySwappiness' => memory_swappiness,
-              'MemoryReservation' => memory_reservation,
-              'NetworkMode'     => network_mode,
-              'Privileged'      => privileged,
-              'PidMode'         => pid_mode,
-              'PortBindings'    => port_bindings,
-              'PublishAllPorts' => publish_all_ports,
+              'Binds'           => new_resource.volumes_binds,
+              'CapAdd'          => new_resource.cap_add,
+              'CapDrop'         => new_resource.cap_drop,
+              'CgroupParent'    => new_resource.cgroup_parent,
+              'CpuShares'       => new_resource.cpu_shares,
+              'CpusetCpus'      => new_resource.cpuset_cpus,
+              'Devices'         => new_resource.devices,
+              'Dns'             => new_resource.dns,
+              'DnsSearch'       => new_resource.dns_search,
+              'ExtraHosts'      => new_resource.extra_hosts,
+              'IpcMode'         => new_resource.ipc_mode,
+              'KernelMemory'    => new_resource.kernel_memory,
+              'Links'           => new_resource.links,
+              'LogConfig'       => new_resource.log_config,
+              'Memory'          => new_resource.memory,
+              'MemorySwap'      => new_resource.memory_swap,
+              'MemorySwappiness' => new_resource.memory_swappiness,
+              'MemoryReservation' => new_resource.memory_reservation,
+              'NetworkMode'     => new_resource.network_mode,
+              'Privileged'      => new_resource.privileged,
+              'PidMode'         => new_resource.pid_mode,
+              'PortBindings'    => new_resource.port_bindings,
+              'PublishAllPorts' => new_resource.publish_all_ports,
               'RestartPolicy'   => {
-                'Name'              => restart_policy,
-                'MaximumRetryCount' => restart_maximum_retry_count,
+                'Name'              => new_resource.restart_policy,
+                'MaximumRetryCount' => new_resource.restart_maximum_retry_count,
               },
-              'ReadonlyRootfs'  => ro_rootfs,
-              'SecurityOpt'     => security_opt,
-              'Sysctls'         => sysctls,
-              'Ulimits'         => ulimits_to_hash,
-              'UsernsMode'      => userns_mode,
-              'UTSMode'         => uts_mode,
-              'VolumesFrom'     => volumes_from,
-              'VolumeDriver'    => volume_driver,
+              'ReadonlyRootfs'  => new_resource.ro_rootfs,
+              'SecurityOpt'     => new_resource.security_opt,
+              'Sysctls'         => new_resource.sysctls,
+              'Ulimits'         => new_resource.ulimits_to_hash,
+              'UsernsMode'      => new_resource.userns_mode,
+              'UTSMode'         => new_resource.uts_mode,
+              'VolumesFrom'     => new_resource.volumes_from,
+              'VolumeDriver'    => new_resource.volume_driver,
             },
           }
           net_config = {
             'NetworkingConfig' => {
               'EndpointsConfig' => {
-                network_mode => {
+                new_resource.network_mode => {
                   'IPAMConfig' => {
-                    'IPv4Address' => ip_address,
+                    'IPv4Address' => new_resource.ip_address,
                   },
-                  'Aliases' => network_aliases,
+                  'Aliases' => new_resource.network_aliases,
                 },
               },
             },
-          } if network_mode
+          } if new_resource.network_mode
           config.merge! net_config
 
           Docker::Container.create(config, connection)
@@ -333,12 +333,12 @@ module DockerCookbook
     action :start do
       return if state['Restarting']
       return if state['Running']
-      converge_by "starting #{container_name}" do
+      converge_by "starting #{new_resource.container_name}" do
         with_retries do
-          container.start
-          timeout ? container.wait(timeout) : container.wait unless detach
+          current_resource.container.start
+          timeout ? current_resource.container.wait(timeout) : current_resource.container.wait unless current_resource.detach
         end
-        wait_running_state(true) if detach
+        wait_running_state(true) if current_resource.detach
       end
     end
 
@@ -368,7 +368,7 @@ module DockerCookbook
       validate_container_create
       call_action(:create)
       call_action(:start)
-      call_action(:delete) if autoremove
+      call_action(:delete) if current_resource.autoremove
     end
 
     action :run_if_missing do
