@@ -17,7 +17,7 @@ module DockerCookbook
     ################
 
     def default_script_url
-      case new_resource.repo
+      case repo
       when 'main'
         'https://get.docker.com/'
       when 'test'
