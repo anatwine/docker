@@ -33,9 +33,9 @@ module DockerCookbook
     ################
     def validate_install_method
       if property_is_set?(:version) &&
-         install_method != 'binary' &&
-         install_method != 'package' &&
-         install_method != 'tarball'
+         new_resource.install_method != 'binary' &&
+         new_resource.install_method != 'package' &&
+         new_resource.install_method != 'tarball'
         raise Chef::Exceptions::ValidationFailed, 'Version property only supported for binary, package and tarball installation methods'
       end
     end
@@ -53,7 +53,7 @@ module DockerCookbook
 
     action_class.class_eval do
       def installation(&block)
-        case install_method
+        case new_resource.install_method
         when 'auto'
           install = docker_installation(name, &block)
         when 'binary'
@@ -73,7 +73,7 @@ module DockerCookbook
       end
 
       def svc_manager(&block)
-        case service_manager
+        case new_resource.service_manager
         when 'auto'
           svc = docker_service_manager(name, &block)
         when 'execute'
