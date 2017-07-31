@@ -52,7 +52,7 @@ module DockerCookbook
       end
 
       def image_identifier
-        "#{repo}:#{tag}"
+        "#{new_resource.repo}:#{new_resource.tag}"
       end
 
       def import_image
