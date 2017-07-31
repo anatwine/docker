@@ -17,7 +17,7 @@ module DockerCookbook
     ################
 
     def default_script_url
-      case repo
+      case new_resource.repo
       when 'main'
         'https://get.docker.com/'
       when 'test'
@@ -37,7 +37,7 @@ module DockerCookbook
       end
 
       execute 'install docker' do
-        command "curl -sSL #{script_url} | sh"
+        command "curl -sSL #{new_resource.script_url} | sh"
         creates '/usr/bin/docker'
       end
     end
