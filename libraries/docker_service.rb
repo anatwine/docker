@@ -33,9 +33,9 @@ module DockerCookbook
     ################
     def validate_install_method
       if property_is_set?(:version) &&
-         new_resource.install_method != 'binary' &&
-         new_resource.install_method != 'package' &&
-         new_resource.install_method != 'tarball'
+         install_method != 'binary' &&
+         install_method != 'package' &&
+         install_method != 'tarball'
         raise Chef::Exceptions::ValidationFailed, 'Version property only supported for binary, package and tarball installation methods'
       end
     end
